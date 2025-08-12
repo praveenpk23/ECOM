@@ -14,7 +14,7 @@ const Details = ({ product }) => {
   return (
     // <div className="bg-gray-800 dark:bg-gray-100 min-h-screen py-8">
     <div className="max-w-6xl mx-auto lg:p-20 sm:p-10 p-6">
-      <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 items-stretch ">
+      <div  className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 items-stretch ">
         {/* Left side - Image */}
         <div className="overflow-hidden rounded-lg shadow-lg aspect-w-16 aspect-h-9 max-w-full">
           <img
@@ -25,13 +25,13 @@ const Details = ({ product }) => {
         </div>
 
         {/* Right side - Details */}
-        <div className=" bg-gray-800 flex items-center py-6 px-8 rounded-lg shadow-lg text-white dark:bg-gray-800 dark:text-gray-100">
+        <div  className=" flex items-center py-6 px-8 rounded-lg shadow-lg text-white  bg-gray-800 dark:text-gray-100">
           <div className="flex flex-col justify-start">
             <div>
-              <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-gray-100">
+              <h1 className="text-3xl font-bold mb-2 text-gray-100">
                 {product.name}
               </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm text-gray-400 mb-4">
                 Brand: <span className="font-medium">{product.brand}</span> |
                 Category:{" "}
                 <span className="font-medium">{product.category}</span>
@@ -39,7 +39,7 @@ const Details = ({ product }) => {
 
               <div className="flex items-center mb-4">
                 <Rating value={product.rating} review={product.numReviews} />
-                <span className="ml-3 text-gray-700 dark:text-gray-300">
+                <span className="ml-3 text-gray-300">
                   {product.numReviews} reviews
                 </span>
               </div>
@@ -56,7 +56,7 @@ const Details = ({ product }) => {
                 {product.countInStock > 0 ? "In Stock" : "Out of Stock"}
               </p>
 
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+              <p className="text-gray-300 leading-relaxed">
                 {product.description}
               </p>
             </div>
@@ -66,11 +66,11 @@ const Details = ({ product }) => {
               <div className="mt-6">
                 <label
                   htmlFor="qty"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  className="block text-sm font-medium text-gray-300 mb-2"
                 >
                   Quantity:
                 </label>
-                <select  className="w-full text-center select bg:gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100  rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <select  className="w-full text-center select bg-gray-700 text-gray-900 dark:text-gray-100  rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                   {qtyCount.map((qty) => (
                     <option className="text-center" key={qty+1} value={qty + 1}>{qty + 1}</option>
                   ))}

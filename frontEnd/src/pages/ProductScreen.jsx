@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import Details from '../components/Details';
 import PageNotFound from './PageNotFound';
 import useFetchProduct from '../Hook/useFetchProduct'
-import products from '../../../backEnd/data/products';
+// import products from '../../../backEnd/data/products';
 
 const ProductScreen = () => {
 
@@ -29,7 +29,7 @@ const ProductScreen = () => {
 
       </Link>     
     {/* <h1 className="text-2xl font-bold text-center my-6">Product Details</h1> */}
-    {data._id ? ( <Details key={products._id} product={data} />) : (<PageNotFound/>)}
+    {data._id ? ( <Details key={data._id} product={data} />) : (<PageNotFound/>)}
     </div>
    )}
    </>

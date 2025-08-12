@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import productRoutes from './routes/productRoutes.js'
+import connectDB from './config/db.js';
 dotenv.config();
 const app = express();
 
@@ -21,14 +22,18 @@ app.use(cors({origin:(origin,callback)=>{
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => console.log('✅ MongoDB connected'))
-  .catch(err => {
-    console.error('❌ MongoDB connection error:', err);
-    process.exit(1);
-  });
+
+connectDB();
+
+
+// mongoose.connect(process.env.MONGO_URL, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// }).then(() => console.log('✅ MongoDB connected'))
+//   .catch(err => {
+//     console.error('❌ MongoDB connection error:', err);
+//     process.exit(1);
+//   });
 
 
 // Routes
