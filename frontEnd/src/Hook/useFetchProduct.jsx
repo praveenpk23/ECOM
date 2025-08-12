@@ -6,7 +6,7 @@ import axios from 'axios'
 const cache = {};
 
 
-const useFetchProduct = (id=-1) => {
+const useFetchProduct = (id=0) => {
     const [data,setData] = useState(id === -1 ? [] : {})
     const [loading,setLoading] = useState(false)
      const options = {
@@ -15,7 +15,7 @@ const useFetchProduct = (id=-1) => {
             accept: 'application/json',
         }
       }
-    const url = id === -1 ? 'http://localhost:5000/api/products' : `http://localhost:5000/api/products/${id}`;
+    const url = id === 0 ? 'http://localhost:5000/api/products' : `http://localhost:5000/api/products/${id}`;
    
 
 
