@@ -7,7 +7,7 @@ const cache = {};
 
 
 const useFetchProduct = (id=0) => {
-    const [data,setData] = useState(id === -1 ? [] : {})
+    const [data,setData] = useState(id === 0 ? [] : {})
     const [loading,setLoading] = useState(false)
      const options = {
         method: 'GET',

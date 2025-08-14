@@ -8,8 +8,8 @@
     "dev": "nodemon backEnd/server.js",
     "clinet": "npm run dev --prefix frontEnd",
     "both": "concurrently \"npm run dev\" \"npm run clinet\"",
-    "data:import":"node backEnd/seeder",
-    "data:destroy":"node backEnd/seeder -d"
+    "data:import": "node backEnd/seeder",
+    "data:destroy": "node backEnd/seeder -d"
   },
   "author": "Praveenpk.23",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "express-async-handler": "^1.2.0",
     "mongodb": "^6.18.0",
     "mongoose": "^8.17.1",
     "nodemon": "^3.1.10"
