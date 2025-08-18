@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
 
-// ✅ Module-level cache — persists as long as the app is running (no full page reload)
+// Module-level cache — persists as long as the app is running (no full page reload)
 const cache = {};
 
 
@@ -60,7 +60,7 @@ const useFetchProduct = (id=0) => {
     },[url])
 
   return {
-    data,loading
+  
   }
 }
 

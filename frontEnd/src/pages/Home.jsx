@@ -1,10 +1,13 @@
 import React from 'react'
 import Product from '../components/Product'
-import useFetchProduct from '../Hook/useFetchProduct'
-
+// import useFetchProduct from '../Hook/useFetchProduct'
+import { useGetProductsQuery } from '../Slice/productApiSlice';
 const Home = () => {
 
-  const {data:products,loading} = useFetchProduct();
+  // const {data:products,loading} = useFetchProduct();
+  const {data:products,error,isLoading:loading} = useGetProductsQuery();
+
+      if (error) return <div>Error: {error}</div>;
 
   return (
 

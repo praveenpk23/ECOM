@@ -2,13 +2,15 @@ import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Details from '../components/Details';
 import PageNotFound from './PageNotFound';
-import useFetchProduct from '../Hook/useFetchProduct'
+// import useFetchProduct from '../Hook/useFetchProduct'
 // import products from '../../../backEnd/data/products';
-
+import { useGetProductDetailsQuery } from '../Slice/productApiSlice';
 const ProductScreen = () => {
 
   const { id } = useParams();
-  const {data,loading} = useFetchProduct(id);
+  // const {data,loading} = useFetchProduct(id);
+  const {data,isLoading:loading,error} = useGetProductDetailsQuery(id);
+      if (error) return <div>Error: {error}</div>;
 
   return (
    <>
