@@ -1,6 +1,9 @@
 import React from "react";
 import {Link} from 'react-router-dom'
+import { useSelector } from "react-redux";
 const Header = () => {
+  const cartCount = useSelector((state)=>state.cart.cartItem.length)
+  console.log(useSelector((state)=>state.cart.cartItem))
   return (
     <div className="navbar bg-base-100 shadow-sm relative z-50">
       <div className="flex-1">
@@ -9,7 +12,7 @@ const Header = () => {
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <Link to='/cart'>Cart(5)</Link>
+            <Link to='/cart'>Cart({cartCount})</Link>
           </li>
           <li className="relative">
             <details>

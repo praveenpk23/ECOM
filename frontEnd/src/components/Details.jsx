@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Rating from "./Rating"; // Assuming you have this component
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch,useSelector } from "react-redux";
+import { addToCart } from "../Slice/CartSlice";
 const Details = ({ product }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   if (!product) {
@@ -11,6 +13,13 @@ const Details = ({ product }) => {
     );
   }
   const qtyCount = [...Array(product.countInStock).keys()];
+    const [selectedQty, setSelectedQty] = useState(qtyCount[0] + 1); // default value
+const handleChange =(e)=>{
+    setSelectedQty(Number(e.target.value)); // get the selected value
+}
+
+
+
   return (
     // <div className="bg-gray-800 dark:bg-gray-100 min-h-screen py-8">
     <div className="max-w-6xl mx-auto lg:p-20 sm:p-10 p-6">
@@ -70,7 +79,7 @@ const Details = ({ product }) => {
                 >
                   Quantity:
                 </label>
-                <select  className="w-full text-center select bg-gray-700 text-gray-900 dark:text-gray-100  rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <select value={selectedQty} onChange={handleChange}  className="w-full text-center select bg-gray-700 text-gray-900 dark:text-gray-100  rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                   {qtyCount.map((qty) => (
                     <option className="text-center" key={qty+1} value={qty + 1}>{qty + 1}</option>
                   ))}
@@ -81,7 +90,7 @@ const Details = ({ product }) => {
             {/* Add to Cart Button */}
             <button
               disabled={product.countInStock === 0}
-              onClick={() => navigate(`/cart/${product._id}`)}
+              onClick={() => dispatch(addToCart({ product, quantity: selectedQty }))}
               className={`mt-6 w-full py-3 rounded-md font-semibold text-white transition-colors duration-300 ${
                 product.countInStock > 0
                   ? "bg-purple-600 hover:bg-purple-700"
