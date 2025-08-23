@@ -3,10 +3,12 @@ import Rating from "./Rating"; // Assuming you have this component
 import { useNavigate } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
 import { addToCart } from "../Slice/CartSlice";
+// import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 const Details = ({ product }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  
   if (!product) {
     return (
       <div className="p-8 text-center text-gray-500">Product not found.</div>
@@ -17,8 +19,6 @@ const Details = ({ product }) => {
 const handleChange =(e)=>{
     setSelectedQty(Number(e.target.value)); // get the selected value
 }
-
-
 
   return (
     // <div className="bg-gray-800 dark:bg-gray-100 min-h-screen py-8">
@@ -90,7 +90,9 @@ const handleChange =(e)=>{
             {/* Add to Cart Button */}
             <button
               disabled={product.countInStock === 0}
-              onClick={() => dispatch(addToCart({ product, quantity: selectedQty }))}
+              onClick={() =>{ 
+                dispatch(addToCart({ product, quantity: selectedQty }))
+            }}
               className={`mt-6 w-full py-3 rounded-md font-semibold text-white transition-colors duration-300 ${
                 product.countInStock > 0
                   ? "bg-purple-600 hover:bg-purple-700"

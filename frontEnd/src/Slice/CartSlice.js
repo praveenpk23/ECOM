@@ -1,7 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { act } from "react";
-
+import toast from "react-hot-toast";
 const initialState = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : {cartItem:[]}
+
+const orderCalculate = (state) => {
+  state.deliveryCharge = 59;
+  state.gstPercentage = 8;
+
+  state.itemPrice = state.cartItem.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  state.shippingPrice = state.itemPrice >= 499 ? 0 : state.deliveryCharge;
+  state.taxPrice = Number(((state.gstPercentage / 100) * state.itemPrice).toFixed(2));
+  state.totalPrice = Number((state.itemPrice + state.taxPrice + state.shippingPrice).toFixed(2));
+
+  localStorage.setItem("cart", JSON.stringify(state));
+};
+
 
 const cartSlice = createSlice({
     name:"cart",
@@ -21,9 +34,12 @@ const cartSlice = createSlice({
                 state.cartItem.push({ ...product, quantity });
             }
 
-            // Save to localStorage
-            localStorage.setItem("cart", JSON.stringify(state));
-            // localStorage.setItem("cart", JSON.stringify({cartItem:state.cartItem}));
+            const deliveryCharge = 59;
+            const gstPercentage = 8;
+
+            orderCalculate(state);
+            toast.success("Product added to cart !")
+
            
       },
       updateCartQuantity:(state,action)=>{
@@ -32,16 +48,19 @@ const cartSlice = createSlice({
            state.cartItem = state.cartItem.map((product)=>(
             product._id === id ? {...product,quantity:qty} : product
            ))
-            // Save to localStorage
-            localStorage.setItem("cart", JSON.stringify(state));
+           
+          ;
+                        orderCalculate(state);
+
       },
       removeFromCart:(state,action)=>{
        state.cartItem = state.cartItem.filter((product)=> product._id != action.payload);
-       
-            // Save to localStorage
-            localStorage.setItem("cart", JSON.stringify(state));
+                   orderCalculate(state);
+
+            toast.error("Item deleted from cart")
         
-      }
+      },
+  
     }
 
 })
