@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header from './components/Header'
 import Home from './pages/Home'
 import Footer from './components/Footer'
 import { Outlet } from 'react-router-dom'
 import  { Toaster } from 'react-hot-toast';
+import { useSelector } from 'react-redux'
 const App = () => {
+
+
   return (
    <>
     <div >
-    <span data-theme="dark">
+    <span >
       <Header />
     </span>
     <main className='min-h-screen'>
@@ -16,7 +19,7 @@ const App = () => {
         <Outlet />
       </div>
     </main>
-    <span data-theme="dark">
+    <span >
     <Footer  />
     </span>
     </div>

@@ -4,40 +4,26 @@
   import { updateCartQuantity, removeFromCart } from "../Slice/CartSlice";
   const CartScreen = () => {
     const dispatch = useDispatch();
-    // const [total,setTotal] = useState(0);
-    // const [isFreeDelivery,setIsFreeDelivery] = useState(false);
+
     const cart = useSelector((state) => state.cart);
     console.log(cart);
     const deliveryCharge = 59;
-  // const totalCalculate = () => {
-  //   let subtotal = 0;
-  //   cart.forEach((item) => {
-  //     subtotal += item.price * item.quantity;
-  //   });
+ 
+    const state = useSelector((state)=>state.cart)
 
-  //   let total = subtotal + deliveryCharge;
-
-  //   if (subtotal >= 599) {
-  //     setTotal(subtotal); // free delivery
-  //     setIsFreeDelivery(true);
-  //   } else {
-  //     setTotal(total); // normal delivery included
-  //     setIsFreeDelivery(false);
-  //   }
-  // };
-
-  // useEffect(()=>{
-  // totalCalculate();
-  // },[cart])
+    useEffect(()=>{
+      console.log("USEef")
+        localStorage.setItem("cart", JSON.stringify(state));
+    },[state])
 
     return (
       <div className="container mx-auto p-5 ">
-        <h1 className="text-4xl  "> My Cart </h1>
+        <h1 className="text-4xl font-bold text-center "> Our Cart </h1>
 
         {cart.cartItem.length > 0 ? (
           <>
             <div className="flex justify-center py-10  items-end flex-wrap-reverse  flex-cols">
-              <section className=" py-7 ">
+              <section className="py-10 xl:py-0  ">
                 <div className="grid grid-cols-1">
                   {/* {cart.length > 0 && (
                     
@@ -54,52 +40,92 @@
                     </>
                 </div>
               </section> 
-              <section className="p-10 mx-4 rounded-2xl bg-green-300">
-    <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+<section className="p-8 mx-4 rounded-2xl bg-gray-900 text-gray-100 shadow-xl border border-gray-700">
+  <h2 className="text-2xl font-bold mb-6 text-center text-green-400">Order Summary</h2>
 
+  <div className="space-y-3 mb-6">
     {cart.cartItem.map((item) => (
-      <p key={item._id}>
-        {item.name} = ₹{item.price} × {item.quantity} = ₹{item.price * item.quantity}
-      </p>
+      <div
+        key={item._id}
+        className="flex justify-between items-center text-sm border-b border-gray-700 pb-2"
+      >
+        <span className="font-medium text-gray-300 px-2">{item.name}</span>
+        <span className="text-gray-400">
+          ₹{item.price} × {item.quantity}
+        </span>
+        <span className="font-semibold text-gray-200 px-1">
+          ₹{item.price * item.quantity}
+        </span>
+      </div>
     ))}
+  </div>
 
+  <div className="space-y-2 text-sm mb-6">
     {cart.shippingPrice === 0 ? (
       <>
-        {/* <p>Subtotal = ₹{total}</p> */}
-        <p className="line-through text-red-600">Delivery = ₹{cart.deliveryCharge}</p>
-        <p className="text-green-700">Delivery = FREE</p>
-        <p>GST(8%) = {cart.taxPrice}</p>
-        <p className="font-bold text-lg">Final Total = ₹{cart.totalPrice}</p>
+        <p className="flex justify-between">
+          <span className=" text-red-500">Delivery</span>
+          <span className="line-through text-red-500">₹{cart.deliveryCharge}</span>
+        </p>
+        <p className="flex justify-between font-medium text-green-400">
+          <span>Delivery</span>
+          <span>FREE</span>
+        </p>  
+        <p className="flex justify-between text-gray-300">
+          <span>GST ({cart.gstPercentage}%)</span>
+          <span>₹{cart.taxPrice}</span>
+        </p>
       </>
     ) : (
       <>
-        {/* <p>Subtotal = ₹{total - deliveryCharge}</p> */}
-        <p>Delivery = ₹{cart.shippingPrice}</p>
-        <p>GST(8%) = {cart.taxPrice}</p>
-        <p className="font-bold text-lg">Final Total = ₹{cart.totalPrice}</p>
+        <p className="flex justify-between text-gray-300">
+          <span>Delivery</span>
+          <span>₹{cart.shippingPrice}</span>
+        </p>
+        <p className="flex justify-between text-gray-300">
+          <span>GST ({cart.gstPercentage}%)</span>
+          <span>₹{cart.taxPrice}</span>
+        </p>
       </>
     )}
-    <div className="mt-4">
-    <div className="flex items-center mb-3">
-      <input type="checkbox" checked readOnly className="mr-2" />
-      <label>Cash on Delivery (Default)</label>
-    </div>
-    <button
-      onClick={() =>
-        dispatch(
-          createOrder({
-            cart,
-            paymentMethod: "COD",
-          })
-        )
-      }
-      className="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700"
-    >
-      Buy Now
-    </button>
   </div>
 
-  </section>
+  <div className="flex justify-between items-center border-t border-gray-700 pt-4 mb-6">
+    <span className="font-bold text-lg text-gray-200">Final Total</span>
+    <span className="font-extrabold text-2xl text-green-400">
+      ₹{cart.totalPrice}
+    </span>
+  </div>
+
+  {/* Payment Method */}
+  <div className="mb-6">
+    <label className="flex items-center gap-2 text-gray-300">
+      <input
+        type="checkbox"
+        checked
+        readOnly
+        className="w-4 h-4 text-green-500 rounded focus:ring-green-400"
+      />
+      Cash on Delivery (Default)
+    </label>
+  </div>
+
+  {/* Buy Now Button */}
+  <button
+    onClick={() =>
+      dispatch(
+        createOrder({
+          cart,
+          paymentMethod: "COD",
+        })
+      )
+    }
+    className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-700 font-semibold text-lg shadow-lg transition"
+  >
+    Buy Now
+  </button>
+</section>
+
 
             </div>
           </>
