@@ -6,7 +6,7 @@ const Product = ({ product }) => {
   return (
     <Link
       to={`/product/${product._id}`}
-      className="block max-w-sm rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-white dark:bg-gray-900"
+      className="block max-w-sm rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
   
     >
       <figure className="overflow-hidden">
@@ -18,11 +18,11 @@ const Product = ({ product }) => {
       </figure>
 
       <div className="p-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 truncate">
+        <h2 className="text-xl font-semibold  mb-2 truncate">
           {product.name}
         </h2>
 
-        <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2 mb-4">
+        <p className="text-sm line-clamp-2 mb-4">
           {product.description}
         </p>
 
@@ -33,7 +33,7 @@ const Product = ({ product }) => {
 
         <div className="flex items-center flex-wrap">
             <Rating value={product.rating} review={product.numReviews} />
-            <span className="ml-3 text-gray-700 dark:text-gray-300">{product.numReviews} reviews</span>
+            <span className="ml-3 ">{product.numReviews} reviews</span>
         </div>
         </div>
       </div>

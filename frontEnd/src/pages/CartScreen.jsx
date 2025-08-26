@@ -2,6 +2,8 @@
   import { useSelector,useDispatch } from "react-redux";
   import CartProduct from "../components/CartComp";
   import { updateCartQuantity, removeFromCart } from "../Slice/CartSlice";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
   const CartScreen = () => {
     const dispatch = useDispatch();
 
@@ -10,11 +12,29 @@
     const deliveryCharge = 59;
  
     const state = useSelector((state)=>state.cart)
-
+    const navigate = useNavigate();
     useEffect(()=>{
       console.log("USEef")
         localStorage.setItem("cart", JSON.stringify(state));
     },[state])
+
+
+
+ const handleOrder = async (cart, paymentMethod) => {
+  try {
+    const res = await axios.get("http://localhost:5000/api/profile", { withCredentials: true });
+    if (res.data.user) {
+      console.log("handle Ordering", res.data.user, cart, paymentMethod);
+      // proceed to create order request here
+    } else {
+      navigate('/login?redirect=cart');
+    }
+  } catch {
+    navigate('/login?redirect=cart');
+  }
+}
+
+
 
     return (
       <div className="container mx-auto p-5 ">
@@ -112,14 +132,7 @@
 
   {/* Buy Now Button */}
   <button
-    onClick={() =>
-      dispatch(
-        createOrder({
-          cart,
-          paymentMethod: "COD",
-        })
-      )
-    }
+    onClick={() => handleOrder(cart,"COD") }
     className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-700 font-semibold text-lg shadow-lg transition"
   >
     Buy Now

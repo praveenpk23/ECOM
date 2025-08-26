@@ -3,8 +3,13 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import productRoutes from "./routes/productRoutes.js";
+import userRoutes from './routes/userRoutes.js'
+import authRoutes from './routes/authRoutes.js'
 import connectDB from "./config/db.js";
 import { errorHandler, notFound } from "./middleWare/errorHandler.js";
+import cookieParser from "cookie-parser";
+import { authUser } from "./controllers/userController.js";
+
 dotenv.config();
 const app = express();
 
@@ -29,12 +34,16 @@ app.use(express.json());
 connectDB();
 app.use(log);
 
-
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
 
 
 
 // Routes
 app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
+// app.use('/api/auth',authRoutes)
 app.use(notFound)
 app.use(errorHandler)
 // Server Start
