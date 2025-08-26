@@ -22,9 +22,9 @@ import axios from "axios";
 
  const handleOrder = async (cart, paymentMethod) => {
   try {
-    const res = await axios.get("http://localhost:5000/api/profile", { withCredentials: true });
-    if (res.data.user) {
-      console.log("handle Ordering", res.data.user, cart, paymentMethod);
+    const res = await axios.get("http://localhost:5000/api/users/profile", { withCredentials: true });
+    if (res.data) {
+      console.log("handle Ordering", res.data, cart, paymentMethod);
       // proceed to create order request here
     } else {
       navigate('/login?redirect=cart');

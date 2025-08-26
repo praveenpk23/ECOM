@@ -24,33 +24,29 @@ app.use(
         callback(new Error("Invalid Origin"));
       }
     },
+      credentials: true  // allow cookies & credentials
   })
 );
 
 app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
 
 // MongoDB Connection
 
 connectDB();
-app.use(log);
 
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
-app.use(cookieParser());
+
 
 
 
 // Routes
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
-// app.use('/api/auth',authRoutes)
 app.use(notFound)
 app.use(errorHandler)
 // Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
-function log(req, res, next) {
-  console.log("Log");
-  next();
-}
+

@@ -17,6 +17,7 @@ const LoginScreen = () => {
 const submitHandler = async (e) => {
   e.preventDefault(); // prevent default form submit
   setError(null);     // reset error state
+alert(email,password)
 
   try {
     // 1️⃣ Send login request to backend
@@ -25,7 +26,6 @@ const submitHandler = async (e) => {
       { email, password },
       { withCredentials: true } // important to send and receive cookies
     );
-
     // 2️⃣ Check redirect query param
     // ?redirect=cart → navigate to /cart, otherwise /
     if (redirect === "cart") {
@@ -48,7 +48,7 @@ const submitHandler = async (e) => {
 useEffect(() => {
   const checkAuth = async () => {
     try {
-      await axios.get("http://localhost:5000/api/users/profile", { withCredentials: true });
+      const data = await axios.get("http://localhost:5000/api/users/profile", { withCredentials: true });
       if (redirect === "cart") {
         navigate("/cart");
       } else {
@@ -81,6 +81,8 @@ return (
               placeholder="Enter your email"
               className="input input-bordered"
               required
+                value={email}                   // bind state
+    onChange={(e) => setEmail(e.target.value)} // update state
             />
           </div>
 
@@ -94,6 +96,8 @@ return (
               placeholder="Enter your password"
               className="input input-bordered"
               required
+              value={password}                 // bind state
+    onChange={(e) => setPassword(e.target.value)} // update state
             />
           </div>
 

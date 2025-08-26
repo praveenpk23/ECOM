@@ -3,6 +3,7 @@ import { response } from "express";
 import asyncHandler from "../middleWare/asyncHandler .js";
 import User from "../models/userModel.js";
 import jwt from 'jsonwebtoken'
+import Product from "../models/ProductModel.js";
 
 
 
@@ -17,21 +18,33 @@ const generateToken = (id) => {
 
 export const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({email});
-  if(user && await user.matchPassword(password)){
-        const token = generateToken(user._id);
-       res.cookie("jwt", token, {
-          httpOnly: true, // cannot be accessed by JS
-          secure: process.env.NODE_ENV === "production", // use only https in prod
-          sameSite: "strict",
-          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        } );
-        res.json({ message: "User found", user }); 
-    console.log(user)
-  }else{
-    res.status(401).json("Invalide email or password")
+  console.log(email)
+  const user = await User.findOne({ email });
+
+  if (user && (await user.matchPassword(password))) {
+    const token = generateToken(user._id);
+
+    res.cookie("jwt", token, {
+      httpOnly: true, // cannot be accessed by JS
+      secure: process.env.NODE_ENV === "production", // only https in prod
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.json({
+      message: "User authenticated successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        // don’t send password
+      },
+    });
+  } else {
+    res.status(401).json({ message: "Invalid email or password" });
   }
 });
+
 
 
 
@@ -57,8 +70,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 
    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // add user info to request
-    res.json(decoded);
-
+   const user = await User.findById(decoded.id).select("-password");
+     res.json(user);
 });
 
 export const updateUserProfile = asyncHandler(async (req, res) => {
