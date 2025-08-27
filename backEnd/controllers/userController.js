@@ -57,7 +57,15 @@ export const registerUser = asyncHandler(async (req, res) => {
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
-  res.send("logoutUser");
+  // Clear the JWT cookie
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    expires: new Date(0), // expire immediately
+  });
+
+  res.json({ message: "User logged out successfully" });
 });
 
 export const getUserProfile = asyncHandler(async (req, res) => {

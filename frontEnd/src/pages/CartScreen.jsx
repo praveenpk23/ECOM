@@ -2,36 +2,31 @@
   import { useSelector,useDispatch } from "react-redux";
   import CartProduct from "../components/CartComp";
   import { updateCartQuantity, removeFromCart } from "../Slice/CartSlice";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+  import { useNavigate } from "react-router-dom";
+  import { useGetUserProfileQuery } from "../Slice/userApiSlice";
   const CartScreen = () => {
     const dispatch = useDispatch();
-
+    // const {data,loading,error,isError} = useGetUserProfileQuery();
     const cart = useSelector((state) => state.cart);
+    const data = useSelector((state) => state.user.value);
     console.log(cart);
     const deliveryCharge = 59;
  
     const state = useSelector((state)=>state.cart)
     const navigate = useNavigate();
     useEffect(()=>{
-      console.log("USEef")
         localStorage.setItem("cart", JSON.stringify(state));
     },[state])
 
 
 
  const handleOrder = async (cart, paymentMethod) => {
-  try {
-    const res = await axios.get("http://localhost:5000/api/users/profile", { withCredentials: true });
-    if (res.data) {
-      console.log("handle Ordering", res.data, cart, paymentMethod);
+ if (data) {
+      console.log("handle Ordering", data, cart, paymentMethod);
       // proceed to create order request here
     } else {
       navigate('/login?redirect=cart');
     }
-  } catch {
-    navigate('/login?redirect=cart');
-  }
 }
 
 

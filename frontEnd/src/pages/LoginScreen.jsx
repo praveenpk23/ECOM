@@ -1,119 +1,98 @@
-// LoginScreen.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useLoginUserMutation, useGetUserProfileQuery } from "../Slice/userApiSlice";
+import { setUser, clearUser } from "../Slice/userSlice";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // get redirect param from url
   const redirect = new URLSearchParams(location.search).get("redirect") || "/";
 
-const submitHandler = async (e) => {
-  e.preventDefault(); // prevent default form submit
-  setError(null);     // reset error state
-alert(email,password)
+  // Login mutation
+  const [loginUser, { isLoading }] = useLoginUserMutation();
 
-  try {
-    // 1️⃣ Send login request to backend
-    const { data } = await axios.post(
-      "http://localhost:5000/api/users/login",
-      { email, password },
-      { withCredentials: true } // important to send and receive cookies
-    );
-    // 2️⃣ Check redirect query param
-    // ?redirect=cart → navigate to /cart, otherwise /
-    if (redirect === "cart") {
-      navigate("/cart");
-    } else {
-      navigate("/");
-    }
-  } catch (err) {
-    // 3️⃣ Handle errors
-    console.error("Login failed:", err.response || err);
-    setError(
-      err.response?.data?.message || "Invalid email or password"
-    );
-  }
-};
+  // Auto-fetch user profile
+  const { data: profileData, refetch: refetchProfile } = useGetUserProfileQuery();
 
+  // Submit handler
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setError(null);
 
-
-  // auto-redirect if already logged in (based on cookie session)
-useEffect(() => {
-  const checkAuth = async () => {
     try {
-      const data = await axios.get("http://localhost:5000/api/users/profile", { withCredentials: true });
-      if (redirect === "cart") {
-        navigate("/cart");
-      } else {
-        navigate("/");
+      // Login
+      await loginUser({ email, password }).unwrap();
+
+      // Refetch profile after login
+      const { data } = await refetchProfile();
+      if (data) {
+        dispatch(setUser(data));
+        if(redirect){
+          navigate('/cart')
+        }else{
+          navigate('/')
+        }
       }
     } catch (err) {
-      // not logged in → stay
+      console.error("Login failed:", err);
+      setError(err?.data?.message || "Login failed");
     }
   };
-  checkAuth();
-}, [navigate, redirect]);
 
-return (
+  // Auto redirect if already logged in
+  useEffect(() => {
+    if (profileData) {
+      dispatch(setUser(profileData));
+      navigate('/cart');
+    } else {
+      dispatch(clearUser());
+    }
+  }, [profileData,redirect, dispatch, redirect]);
+
+  return (
     <div className="flex justify-center items-center h-screen bg-base-200">
       <div className="card w-96 shadow-2xl bg-base-100">
         <form onSubmit={submitHandler} className="card-body">
           <h2 className="text-2xl font-bold text-center">Login</h2>
 
-          {/* Error message */}
-          {/* Replace error state dynamically */}
-          {/* <p className="text-error">Invalid credentials</p> */}
+          {error && <p className="text-error">{error}</p>}
 
-          {/* Email field */}
           <div className="form-control">
-            <label className="label">
-              <span className="label-text">Email</span>
-            </label>
+            <label className="label"><span className="label-text">Email</span></label>
             <input
               type="email"
               placeholder="Enter your email"
               className="input input-bordered"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-                value={email}                   // bind state
-    onChange={(e) => setEmail(e.target.value)} // update state
             />
           </div>
 
-          {/* Password field */}
           <div className="form-control">
-            <label className="label">
-              <span className="label-text">Password</span>
-            </label>
+            <label className="label"><span className="label-text">Password</span></label>
             <input
               type="password"
               placeholder="Enter your password"
               className="input input-bordered"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
-              value={password}                 // bind state
-    onChange={(e) => setPassword(e.target.value)} // update state
             />
           </div>
 
-          {/* Submit button */}
           <div className="form-control mt-4">
-            <button type="submit" className="btn btn-primary w-full">
-              Login
+            <button type="submit" className="btn btn-primary w-full" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Login"}
             </button>
           </div>
-
-          {/* Optional actions */}
-          <label className="label justify-center">
-            <a href="#" className="label-text-alt link link-hover">
-              Forgot password?
-            </a>
-          </label>
         </form>
       </div>
     </div>
