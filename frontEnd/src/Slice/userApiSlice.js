@@ -6,13 +6,15 @@ const userApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${USER_URL}/profile`,
       }),
-      providesTags: ["User"], // tag the cached data
+  // providesTags: (result, error, id) => [{ type: "User", id }],
+  providesTags: ["User"]
     }),
     logoutUser: builder.mutation({
       query: () => ({
         url: `${USER_URL}/logout`,
         method: "POST",
       }),
+      invalidatesTags: ["User"]
     }),
     loginUser:builder.mutation({
         query:({email,password})=>({
@@ -20,9 +22,17 @@ const userApiSlice = apiSlice.injectEndpoints({
             method:"POST",
             body:{email,password}
         })
+    }),
+    handleUpdateUser:builder.mutation({
+      query:({id,...update})=>({
+        url:`${USER_URL}/${id}`,
+        method:"PUT",
+        body:update
+      }),
+      invalidatesTags: ["User"]
     })
   }),
 });
 
 export { userApiSlice };
-export const { useGetUserProfileQuery, useLogoutUserMutation,useLoginUserMutation } = userApiSlice;
+export const { useGetUserProfileQuery, useLogoutUserMutation,useLoginUserMutation,useHandleUpdateUserMutation } = userApiSlice;

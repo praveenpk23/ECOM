@@ -3,19 +3,23 @@ import { Link, useNavigate } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import { updateTheme } from "../Slice/themeSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { useGetUserProfileQuery,useLogoutUserMutation } from "../Slice/userApiSlice";
-import { userApiSlice } from "../Slice/userApiSlice"; 
-import { setUser,clearUser } from "../Slice/userSlice";
+import {
+  useGetUserProfileQuery,
+  useLogoutUserMutation,
+} from "../Slice/userApiSlice";
+import { userApiSlice } from "../Slice/userApiSlice";
+import { useHandleUpdateUserMutation } from "../Slice/userApiSlice";
+import axios from "axios";
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cartCount = useSelector((state) => state.cart.cartItem.length);
   const theme = useSelector((state) => state.theme.value);
-  console.log(useSelector((state) => state.cart.cartItem));
-  console.log(useSelector((state) => state));
-  const { data } = useGetUserProfileQuery(undefined, { refetchOnMountOrArgChange: true });
-  const user = useSelector((state)=>state.user.value)
-  
+
+  const { data } = useGetUserProfileQuery();
+  // console.log(data);
+  // const user = useSelector((state) => state.user.value);
+
   const [logoutUser] = useLogoutUserMutation();
   const changeTheme = () => {
     if (theme === "dark") {
@@ -30,33 +34,40 @@ const Header = () => {
   useEffect(() => {
     // document.documentElement.setAttribute('data-theme', localStorage.getItem("theme") || "light");
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme",theme)
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
+  const handleLogout = async () => {
+    await logoutUser(); // call your API logout
 
+    // Completely clear all RTK Query cache
+    dispatch(userApiSlice.util.resetApiState());
 
-useEffect(() => {
-  if (data) {
-    dispatch(setUser(data));
-    console.log("F", data);
-  }
-}, [data, dispatch]); // run whenever 'data' changes
+    // Clear Redux user slice
+    // dispatch(clearUser());
 
+    // Redirect to login page
+    navigate("/login");
+  };
 
-const handleLogout = async () => {
-  await logoutUser(); // call your API logout
+  const [handleUpdateUser, { isLoading }] = useHandleUpdateUserMutation();
 
-  // Completely clear all RTK Query cache
-  dispatch(userApiSlice.util.resetApiState());
+  // const handleUpdateUserInfo = async (id) => {
+  //   // const res = await handleUpdateUser({id,  name: "praveenpk" }).unwrap()
+  //   // console.log(res)
+  //   const res = await axios.put(`http://localhost:5000/api/users/${id}`,{name:"pk"},{withCredentials:true})
+  //   console.log(res)
+  //   dispatch(setUser(res.data.newUser))
 
-  // Clear Redux user slice
-  dispatch(clearUser());
+  // };
 
-  // Redirect to login page
-  navigate("/login");
-};
-
-
+  const handleUpdateUserInfo = async (id) => {
+    try {
+      const res = await handleUpdateUser({ id, name: "pk" }).unwrap();
+    } catch (err) {
+      console.error("Update failed", err);
+    }
+  };
 
   return (
     <div className="navbar bg-base-100  shadow-sm relative z-50">
@@ -70,24 +81,30 @@ const handleLogout = async () => {
           </li>
           <li className="relative">
             <details>
-              <summary>{user?.name || "User"}</summary>
+              <summary>{data?.name || "User"}</summary>
               <ul className="bg-base-100 rounded-t-none p-2 absolute right-0 mt-2 shadow-lg z-[9999]">
                 <li onClick={changeTheme}>
                   <a>{theme === "light" ? "Dark" : "Light"}</a>
                 </li>
-                <li>
+                <li onClick={() => handleUpdateUserInfo(data._id)}>
                   <a>Profile</a>
                 </li>
-              {user ? (
-                <li onClick={handleLogout}><a>Logout</a></li>
-              ) : (
-                <li onClick={() => {navigate("/login")
-               
-                }}><a>Login</a></li>
-              )}
+                {data ? (
+                  <li onClick={handleLogout}>
+                    <a>Logout</a>
+                  </li>
+                ) : (
+                  <li
+                    onClick={() => {
+                      navigate("/login");
+                    }}
+                  >
+                    <a>Login</a>
+                  </li>
+                )}
               </ul>
             </details>
-          </li> 
+          </li>
         </ul>
       </div>
     </div>

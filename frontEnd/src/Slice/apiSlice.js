@@ -6,6 +6,4 @@ export const apiSlice = createApi({
 
     baseQuery,
     endpoints:(builder)=>({}),
-    tagTypes: ["User"], // tags used in endpoints
-
 })

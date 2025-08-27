@@ -2,10 +2,8 @@
 import { response } from "express";
 import asyncHandler from "../middleWare/asyncHandler .js";
 import User from "../models/userModel.js";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 import Product from "../models/ProductModel.js";
-
-
 
 // generate token helper
 const generateToken = (id) => {
@@ -14,11 +12,9 @@ const generateToken = (id) => {
   });
 };
 
-
-
 export const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log(email)
+  console.log(email);
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
@@ -45,13 +41,6 @@ export const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
 export const registerUser = asyncHandler(async (req, res) => {
   res.send("registerUser");
 });
@@ -69,21 +58,20 @@ export const logoutUser = asyncHandler(async (req, res) => {
 });
 
 export const getUserProfile = asyncHandler(async (req, res) => {
-
   const token = req.cookies.jwt; // read cookie
 
   if (!token) {
     return res.status(401).json({ message: "Not authorized, no token" });
   }
 
-   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // add user info to request
-   const user = await User.findById(decoded.id).select("-password");
-     res.json(user);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  req.user = decoded; // add user info to request
+  const user = await User.findById(decoded.id).select("-password");
+  res.json(user);
 });
 
 export const updateUserProfile = asyncHandler(async (req, res) => {
-  res.send("updateUserProfile");
+  
 });
 
 export const getUsers = asyncHandler(async (req, res) => {
@@ -99,5 +87,8 @@ export const deleteUser = asyncHandler(async (req, res) => {
 });
 
 export const updateUser = asyncHandler(async (req, res) => {
-  res.send("updateUser");
+  const update = req.body;
+  const id = req.params.id
+  const newUser = await User.findByIdAndUpdate(id, update, { new: true });
+  res.json({ message: "updateUser", newUser});
 });

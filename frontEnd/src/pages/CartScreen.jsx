@@ -6,10 +6,10 @@
   import { useGetUserProfileQuery } from "../Slice/userApiSlice";
   const CartScreen = () => {
     const dispatch = useDispatch();
-    // const {data,loading,error,isError} = useGetUserProfileQuery();
+    const {data,loading,error,isError} = useGetUserProfileQuery();
     const cart = useSelector((state) => state.cart);
-    const data = useSelector((state) => state.user.value);
-    console.log(cart);
+    // const data = useSelector((state) => state.user.value);
+    // console.log(cart);
     const deliveryCharge = 59;
  
     const state = useSelector((state)=>state.cart)
