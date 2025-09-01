@@ -6,7 +6,7 @@
   import { useGetUserProfileQuery } from "../Slice/userApiSlice";
   const CartScreen = () => {
     const dispatch = useDispatch();
-    const {data,loading,error,isError} = useGetUserProfileQuery();
+    const {data,loading,error,isError,refetch} = useGetUserProfileQuery();
     const cart = useSelector((state) => state.cart);
     // const data = useSelector((state) => state.user.value);
     // console.log(cart);

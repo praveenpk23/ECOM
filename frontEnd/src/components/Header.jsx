@@ -16,8 +16,8 @@ const Header = () => {
   const cartCount = useSelector((state) => state.cart.cartItem.length);
   const theme = useSelector((state) => state.theme.value);
 
-  const { data } = useGetUserProfileQuery();
-  // console.log(data);
+  const { data, refetch: reFetchUser } = useGetUserProfileQuery();
+  console.log(data);
   // const user = useSelector((state) => state.user.value);
 
   const [logoutUser] = useLogoutUserMutation();
@@ -43,28 +43,19 @@ const Header = () => {
     // Completely clear all RTK Query cache
     dispatch(userApiSlice.util.resetApiState());
 
-    // Clear Redux user slice
-    // dispatch(clearUser());
 
+    console.log(data);
     // Redirect to login page
     navigate("/login");
+    
   };
 
   const [handleUpdateUser, { isLoading }] = useHandleUpdateUserMutation();
 
-  // const handleUpdateUserInfo = async (id) => {
-  //   // const res = await handleUpdateUser({id,  name: "praveenpk" }).unwrap()
-  //   // console.log(res)
-  //   const res = await axios.put(`http://localhost:5000/api/users/${id}`,{name:"pk"},{withCredentials:true})
-  //   console.log(res)
-  //   dispatch(setUser(res.data.newUser))
-
-  // };
-
-  const handleUpdateUserInfo = async (id) => {
+  const handleUpdateUserInfo = async () => {
     try {
-      const res = await handleUpdateUser({ id, name: "pk" }).unwrap();
-    } catch (err) {
+      const res = await handleUpdateUser({ name: "Pk" }).unwrap();
+        } catch (err) {
       console.error("Update failed", err);
     }
   };
