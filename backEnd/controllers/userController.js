@@ -88,14 +88,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
 export const logoutFromAllDevices = asyncHandler(async (req, res) => {});
 
 export const getUserProfile = asyncHandler(async (req, res) => {
-  // const token = req.cookies.jwt; // read cookie
 
-  // if (!token) {
-  //   return res.status(401).json({ message: "Not authorized, no token" });
-  // }
-
-  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  // req.user = decoded; // add user info to request
   if (req.user) {
     res.json(req.user);
   } else {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
   useLoginUserMutation,
@@ -99,6 +99,7 @@ console.log(redirect)
             </button>
           </div>
         </form>
+              <p className="text-center pb-5"> Dont Have An Account ? <span className="text-primary link"><Link to='/register'>Register</Link></span> </p>
       </div>
     </div>
   );

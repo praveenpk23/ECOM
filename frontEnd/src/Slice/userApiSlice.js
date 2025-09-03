@@ -13,7 +13,7 @@ const userApiSlice = apiSlice.injectEndpoints({
         url: `${USER_URL}/logout`,
         method: "POST",
       }),
-      invalidatesTags: ["User"] , 
+      // invalidatesTags: ["User"] , 
     }),
     loginUser:builder.mutation({
         query:({email,password})=>({
@@ -21,6 +21,13 @@ const userApiSlice = apiSlice.injectEndpoints({
             method:"POST",
             body:{email,password}
         })
+    }),
+    registerUser:builder.mutation({
+      query:({name,email,password})=>({
+          url:`${USER_URL}/`,
+          method:"POST",
+          body:{name,email,password}
+      })
     }),
     handleUpdateUser:builder.mutation({
       query:({...update})=>({
@@ -34,4 +41,4 @@ const userApiSlice = apiSlice.injectEndpoints({
 });
 
 export { userApiSlice };
-export const { useGetUserProfileQuery, useLogoutUserMutation,useLoginUserMutation,useHandleUpdateUserMutation } = userApiSlice;
+export const { useGetUserProfileQuery, useLogoutUserMutation,useLoginUserMutation,useHandleUpdateUserMutation,useRegisterUserMutation } = userApiSlice;

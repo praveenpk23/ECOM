@@ -11,6 +11,7 @@ import CartScreen from './pages/CartScreen.jsx';
 import ProductScreen from './pages/ProductScreen.jsx';
 import LoginScreen from './pages/LoginScreen.jsx';
 import PageNotFound from './pages/PageNotFound.jsx';
+import RegisterScreen from './pages/RegisterScreen.jsx';
 import Home from './pages/Home.jsx';
 import { store } from './store.js';
 import { Provider } from 'react-redux'
@@ -21,6 +22,7 @@ const router = createBrowserRouter(
             <Route path="/cart" element={<CartScreen  />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/login" element={<LoginScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
             <Route path="*" element={<PageNotFound />} />
         </Route>
     )
