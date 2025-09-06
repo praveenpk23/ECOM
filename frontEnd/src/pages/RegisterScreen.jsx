@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useRegisterUserMutation, useGetUserProfileQuery } from '../Slice/userApiSlice'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 const RegisterScreen = () => {
   const [email, setEmail] = useState("")
@@ -110,7 +110,7 @@ const RegisterScreen = () => {
             </div>
           </form>
           <p className="text-center mt-2">
-            Already have an account? <a href="/login" className="link link-primary">Login</a>
+            Already have an account? <Link to="/login" className="link link-primary">Login</Link>
           </p>
         </div>
       </div>

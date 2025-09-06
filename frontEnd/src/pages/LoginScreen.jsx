@@ -5,7 +5,8 @@ import {
   useLoginUserMutation,
   useGetUserProfileQuery,
 } from "../Slice/userApiSlice";
-
+import { useGetCartQuery } from "../Slice/cartApiSlice";
+import {useMergeCartMutation} from "../Slice/cartApiSlice"
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,9 +21,10 @@ const LoginScreen = () => {
 console.log(redirect)
   // Login mutation
   const [loginUser, { isLoading }] = useLoginUserMutation();
-
+  const [mergeCart] = useMergeCartMutation();
   // Auto-fetch user profile
   const { data: profileData, refetch: refetchProfile } = useGetUserProfileQuery();
+  const {refetch} = useGetCartQuery();
 
   // Submit handler
   const submitHandler = async (e) => {
@@ -33,10 +35,18 @@ console.log(redirect)
       // Login
       await loginUser({ email, password }).unwrap();
       refetchProfile();
+      refetch();
+      if(localStorage.getItem("cart")){
+        const items = JSON.parse(localStorage.getItem("cart"))
+        await mergeCart(items).unwrap();
+        localStorage.removeItem("cart");
+      }
       if(redirect){
+        localStorage.removeItem("cart");
         navigate(`/${redirect}`)
       }else{
-        navigate('/')
+        localStorage.removeItem("cart");
+        navigate(redirect)
       }
 
     } catch (err) {
@@ -44,6 +54,8 @@ console.log(redirect)
       setError(err?.data?.message || "Login failed");
     }
   };
+
+  // console.log(JSON.parse(localStorage.getItem("cart")));
 
 
   useEffect(()=>{

@@ -61,9 +61,14 @@ const cartSlice = createSlice({
 
       toast.error("Item deleted from cart");
     },
+    removeWholeCart:(state,action)=>{
+      state.cartItem = []
+      localStorage.removeItem("cart");
+      // orderCalculate(state);
+    }
   },
 });
 
 export default cartSlice.reducer;
-export const { addToCart, updateCartQuantity, removeFromCart } =
+export const { addToCart, updateCartQuantity, removeFromCart,removeWholeCart } =
   cartSlice.actions;

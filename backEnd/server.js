@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from './routes/userRoutes.js'
+import cartRoutes from './routes/cartRoutes.js'
 // import authRoutes from './routes/authRoutes.js'
 import connectDB from "./config/db.js";
 import { errorHandler, notFound } from "./middleWare/errorHandler.js";
@@ -43,6 +44,7 @@ connectDB();
 // Routes
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/cart", cartRoutes);
 app.use(notFound)
 app.use(errorHandler)
 // Server Start

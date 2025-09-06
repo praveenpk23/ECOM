@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import { updateTheme } from "../Slice/themeSlice";
@@ -9,17 +9,18 @@ import {
 } from "../Slice/userApiSlice";
 import { userApiSlice } from "../Slice/userApiSlice";
 import { useHandleUpdateUserMutation } from "../Slice/userApiSlice";
+import { useGetCartQuery } from "../Slice/cartApiSlice";
 import axios from "axios";
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const cartCount = useSelector((state) => state.cart.cartItem.length);
   const theme = useSelector((state) => state.theme.value);
-
+  const cartCountLocal = useSelector((state) => state.cart.cartItem.length);
+  const { data: CartData, error, isError, refetch } = useGetCartQuery();
   const { data, refetch: reFetchUser } = useGetUserProfileQuery();
   console.log(data);
   // const user = useSelector((state) => state.user.value);
-
+  const [cartCount, setCartCount] = useState(0);
   const [logoutUser] = useLogoutUserMutation();
   const changeTheme = () => {
     if (theme === "dark") {
@@ -28,7 +29,13 @@ const Header = () => {
       dispatch(updateTheme("dark"));
     }
   };
-
+  useEffect(() => {
+    if (CartData) {
+      setCartCount(CartData.items.length);
+    } else {
+      setCartCount(cartCountLocal);
+    }
+  }, [CartData, cartCountLocal]);
   // const theme = useSelector((state)=>state.theme)
 
   useEffect(() => {
@@ -42,12 +49,10 @@ const Header = () => {
 
     // Completely clear all RTK Query cache
     dispatch(userApiSlice.util.resetApiState());
-
-
+    localStorage.removeItem("cart");
     console.log(data);
     // Redirect to login page
     navigate("/login");
-    
   };
 
   const [handleUpdateUser, { isLoading }] = useHandleUpdateUserMutation();
@@ -55,11 +60,19 @@ const Header = () => {
   const handleUpdateUserInfo = async () => {
     try {
       const res = await handleUpdateUser({ name: "Pk" }).unwrap();
-        } catch (err) {
+    } catch (err) {
       console.error("Update failed", err);
     }
   };
 
+  // useEffect(() => {
+  //     if (data ) {
+  //       setCartCount(CartData.items.length);
+  //     }else{
+  //       const cartCount = useSelector((state) => state.cart.cartItem.length);
+  //       setCartCount(cartCount);
+  //     }
+  //   }, [CartData]);
   return (
     <div className="navbar bg-base-100  shadow-sm relative z-50">
       <div className="flex-1">
@@ -68,7 +81,8 @@ const Header = () => {
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <Link to="/cart">Cart {cartCount}</Link>
+            <Link to="/cart">Cart {cartCount || cartCountLocal}</Link>
+            {/* <Link to="/cart">Cart ({cartCount})</Link> */}
           </li>
           <li className="relative">
             <details>
@@ -77,9 +91,11 @@ const Header = () => {
                 <li onClick={changeTheme}>
                   <a>{theme === "light" ? "Dark" : "Light"}</a>
                 </li>
-                <li onClick={() => handleUpdateUserInfo(data._id)}>
-                  <a>Profile</a>
-                </li>
+                {data && (
+                  <li onClick={() => handleUpdateUserInfo(data._id)}>
+                    <Link to="/profile">Profile</Link>
+                  </li>
+                )}
                 {data ? (
                   <li onClick={handleLogout}>
                     <a>Logout</a>

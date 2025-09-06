@@ -20,7 +20,8 @@ const userApiSlice = apiSlice.injectEndpoints({
             url:`${USER_URL}/login`,
             method:"POST",
             body:{email,password}
-        })
+        }),
+        invalidatesTags:["Cart"]
     }),
     registerUser:builder.mutation({
       query:({name,email,password})=>({

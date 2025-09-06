@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import Rating from "./Rating"; // Assuming you have this component
 import { useNavigate } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
 import { addToCart } from "../Slice/CartSlice";
-// import { toast } from "react-toastify";
+import { useGetUserProfileQuery } from "../Slice/userApiSlice";
+import { useAddCartItemMutation } from "../Slice/cartApiSlice";
 import toast from "react-hot-toast";
 const Details = ({ product }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+  const {data,error,isError,refetch} = useGetUserProfileQuery();
+  const [addCartItem,isLoading] = useAddCartItemMutation();
   if (!product) {
     return (
       <div className="p-8 text-center text-gray-500">Product not found.</div>
@@ -19,6 +21,25 @@ const Details = ({ product }) => {
 const handleChange =(e)=>{
     setSelectedQty(Number(e.target.value)); // get the selected value
 }
+
+const cart = useSelector((state)=>state.cart)
+ useEffect(()=>{
+        localStorage.setItem("cart", JSON.stringify(cart));
+    },[cart])
+
+  const handleAddToCart = async (product, qty) => {
+    if (data) {
+        try{
+          await addCartItem({ productId: product._id, quantity: qty }).unwrap();
+          toast.success("Item added to cart")
+        }catch(err){
+            console.log(err);
+        }
+    }else{
+          dispatch(addToCart({ product, quantity: qty }));
+          // toast.success("Item added to cart")
+    }
+  }
 
   return (
     // <div className="bg-gray-800 dark:bg-gray-100 min-h-screen py-8">
@@ -87,12 +108,10 @@ const handleChange =(e)=>{
               </div>
             )}
 
-            {/* Add to Cart Button */}
+            {/* Add to Cart Button */}  
             <button
               disabled={product.countInStock === 0}
-              onClick={() =>{ 
-                dispatch(addToCart({ product, quantity: selectedQty }))
-            }}
+              onClick={() =>{ handleAddToCart(product, selectedQty)}}
               className={`mt-6 w-full py-3 rounded-md font-semibold text-white transition-colors duration-300 ${
                 product.countInStock > 0
                   ? "bg-purple-600 hover:bg-purple-700"
