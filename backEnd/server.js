@@ -10,6 +10,7 @@ import connectDB from "./config/db.js";
 import { errorHandler, notFound } from "./middleWare/errorHandler.js";
 import cookieParser from "cookie-parser";
 import { authUser } from "./controllers/userController.js";
+// import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 dotenv.config();
 const app = express();

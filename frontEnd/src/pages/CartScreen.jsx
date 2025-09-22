@@ -64,8 +64,11 @@ const CartScreen = () => {
 
   const handleOrder = async (cart, paymentMethod) => {
     if (data) {
-      console.log("handle Ordering", data, cart, paymentMethod);
-      // proceed to create order request here
+      if(data?.shippingDetails?.address){
+              console.log("handle Ordering", data, cart, paymentMethod);
+      }else{
+      navigate("/profile?redirect=cart");
+      }
     } else {
       navigate("/login?redirect=cart");
     }
