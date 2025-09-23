@@ -10,9 +10,11 @@ import {
   useUpdateCartItemMutation,
   useDeleteCartItemMutation,
 } from "../Slice/cartApiSlice";
+import { useCreateOrderMutation } from '../Slice/orderApiSlice'
 import toast from "react-hot-toast";
 const CartScreen = () => {
   const dispatch = useDispatch();
+
   const {
     data,
     isLoading: loading,
@@ -28,6 +30,7 @@ const CartScreen = () => {
   } = useGetCartQuery();
   const [updateCartItem] = useUpdateCartItemMutation();
   const [deleteCartItem] = useDeleteCartItemMutation();
+  const [createOrder, {isLoading:orderCreatingLoad}] = useCreateOrderMutation();
   console.log("cartData from CartScreen", cartData);
   const cart = useSelector((state) => state.cart);
   // const data = useSelector((state) => state.user.value);
@@ -62,15 +65,69 @@ const CartScreen = () => {
     }
   };
 
-  const handleOrder = async (cart, paymentMethod) => {
-    if (data) {
-      if(data?.shippingDetails?.address){
-              console.log("handle Ordering", data, cart, paymentMethod);
-      }else{
-      navigate("/profile?redirect=cart");
-      }
-    } else {
-      navigate("/login?redirect=cart");
+  // const handleOrder = async (cart, paymentMethod) => {
+  //   if (data) {
+  //     if(data?.shippingDetails?.address){
+  //             console.log("handle Ordering", data, cart, paymentMethod);
+  //     }else{
+  //     navigate("/profile?redirect=cart");
+  //     }
+  //   } else {
+  //     navigate("/login?redirect=cart");
+  //   }
+  // };
+
+   const handleOrder = async (cart,paymentMethod) => {
+    // const orderData = {
+    //   items: [cart.items.map((v)=>{return {productId:v.productId._id , quantity:v.productId.quantity , price:v.productId.price}})],
+    //   shippingAddress: {
+    //     fullName: data.name,
+    //     addressLine1: data.shippingDetails.address,
+    //     // addressLine2: 'Apt 4B',
+    //     city: data.shippingDetails.city,
+    //     state: data.shippingDetails.state,
+    //     pincode: data.shippingDetails.pincode,
+    //     country: data.shippingDetails.country,
+    //     phone: data.shippingDetails.phoneNumber
+    //   },
+    //   itemPrice: cart.itemPrice,
+    //   shippingPrice: cart.shippingPrice,
+    //   taxPrice: cart.taxPrice,
+    //   totalPrice: cart.totalPrice,
+    //   paymentMethod: paymentMethod,
+    //   // isPaid: true,
+    //   // paidAt: new Date().toISOString()
+    // };
+   const orderData = {
+  items: cart.items.map(v => ({
+    productId: typeof v.productId === 'string' ? v.productId : v.productId._id,
+    quantity: v.quantity,
+    price: v.productId.price || v.price // fallback if price is stored at v.price
+  })),
+  shippingAddress: {
+    fullName: data.name,
+    addressLine1: data.shippingDetails.address,
+    city: data.shippingDetails.city,
+    state: data.shippingDetails.state,
+    pincode: data.shippingDetails.pincode,
+    country: data.shippingDetails.country,
+    phone: data.shippingDetails.phoneNumber
+  },
+  itemPrice: cart.itemPrice,
+  shippingPrice: cart.shippingPrice,
+  taxPrice: cart.taxPrice,
+  totalPrice: cart.totalPrice,
+  paymentMethod: paymentMethod
+};
+
+    console.log(orderData)
+    try {
+      const newOrder = await createOrder(orderData).unwrap();
+      toast.success("Order Place , Thank you !")
+      isCartRefetch();
+      console.log('Order created:', newOrder);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -82,9 +139,9 @@ const CartScreen = () => {
         </div>
       ) : (
         <>
-          {data ? (
+          {data && cartData ? (
             <>
-              {cartData.items.length === 0 ? (
+              {cartData?.items.length === 0 ? (
                 <>
                   <div className="flex justify-center items-center pt-10">
                     <div className="max-w-3xl mx-auto inline-block text-center ">
@@ -116,7 +173,7 @@ const CartScreen = () => {
                     
                   )} */}
                         <>
-                          {cartData.items.map((product) => (
+                          {cartData?.items.map((product) => (
                             <CartProductFromDB
                               product={product}
                               onQuantityChange={(id, qty) =>
@@ -135,7 +192,7 @@ const CartScreen = () => {
                       </h2>
 
                       <div className="space-y-3 mb-6">
-                        {cartData.items.map((item) => (
+                        {cartData?.items.map((item) => (
                           <div
                             key={item._id}
                             className="flex justify-between items-center text-sm border-b border-gray-700 pb-2"
@@ -154,7 +211,7 @@ const CartScreen = () => {
                       </div>
 
                       <div className="space-y-2 text-sm mb-6">
-                        {cartData.shippingPrice === 0 ? (
+                        {cartData?.shippingPrice === 0 ? (
                           <>
                             <p className="flex justify-between">
                               <span className=" text-red-500">Delivery</span>
@@ -211,6 +268,7 @@ const CartScreen = () => {
                       <button
                         onClick={() => handleOrder(cartData, "COD")}
                         className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-700 font-semibold text-lg shadow-lg transition"
+                        disabled={orderCreatingLoad}
                       >
                         Buy Now
                       </button>
@@ -271,7 +329,7 @@ const CartScreen = () => {
                         </div>
 
                         <div className="space-y-2 text-sm mb-6">
-                          {cart.shippingPrice === 0 ? (
+                          {cart?.shippingPrice === 0 ? (
                             <>
                               <p className="flex justify-between">
                                 <span className=" text-red-500">Delivery</span>

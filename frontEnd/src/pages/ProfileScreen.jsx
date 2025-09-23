@@ -110,7 +110,7 @@ const ProfileScreen = () => {
         {/* Name */}
         <div className=" form-control w-full">
           <label className="label">
-            <span className="label-text font-semibold">Name *</span>
+            <span className="label-text text-white font-semibold">Name *</span>
           </label>
           <input
             type="text"

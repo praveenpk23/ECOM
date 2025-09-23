@@ -7,7 +7,7 @@ import {
   updateCartQuantity, 
   removeFromCart ,
 } from '../controllers/cartController.js';
-import { protect } from '../middleWare/protect.js';
+import { protect } from "../middleware/protect.js";
 const router = express.Router();
 
 // Merge local cart on login

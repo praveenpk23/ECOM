@@ -11,7 +11,7 @@ import { errorHandler, notFound } from "./middleWare/errorHandler.js";
 import cookieParser from "cookie-parser";
 import { authUser } from "./controllers/userController.js";
 // import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-
+import orderRouter from './routes/OrderRoutes.js'
 dotenv.config();
 const app = express();
 
@@ -46,6 +46,7 @@ connectDB();
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRouter);
 app.use(notFound)
 app.use(errorHandler)
 // Server Start

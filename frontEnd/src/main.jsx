@@ -16,6 +16,8 @@ import Home from "./pages/Home.jsx";
 import { store } from "./store.js";
 import { Provider } from "react-redux";
 import ProfileScreen from "./pages/ProfileScreen.jsx";
+import OrdersScreen from './pages/OrdersScreen.jsx'
+import OrderDetailsPage from "./pages/OrderDetailsPage.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -25,6 +27,8 @@ const router = createBrowserRouter(
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
       <Route path="/profile" element={<ProfileScreen />} />
+      <Route path="/orders" element={<OrdersScreen />} />
+      <Route path="/order/:orderId" element={<OrderDetailsPage />} />
       <Route path="*" element={<PageNotFound />} />
     </Route>
   )
